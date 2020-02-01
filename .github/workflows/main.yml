@@ -10,8 +10,8 @@ jobs:
         python-version: [3.6]
 
     steps:
+    - uses: actions/checkout@v2
     - name: setup python
-      uses: actions/checkout@v2
       with:
         python-version: ${{ matrix.python-version }}
       run: python -c "import sys; print(sys.version)"
