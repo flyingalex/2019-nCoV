@@ -50,7 +50,6 @@ function App() {
           })
           .attr("d", path)
           .on("mouseout", () => {
-            console.log('mouseout');
             setShowName(false);
           })
           .on("mouseover", (d) => {
@@ -58,7 +57,6 @@ function App() {
               setM(m);
               setShowName(true);
               setName(d.properties.name);
-              console.log('mouseover');
           });
       // svg.append("g")
       //     .attr("class", "provinces")
