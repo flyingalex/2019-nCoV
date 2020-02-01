@@ -6,7 +6,13 @@ import result from './data/result.json';
 import './App.css';
 
 function App() {
-  const [name, setName] = useState('');
+  const [city, setCity] = useState({
+    cityName: "",
+    confirmedCount: 0,
+    suspectedCount: 0,
+    curedCount: 0,
+    deadCount: 0,
+  });
   const [showName, setShowName] = useState(false);
   const [m, setM] = useState([0, 0]);
   const width = 960, height = 600;
@@ -14,10 +20,13 @@ function App() {
   useEffect(() => {
     result.forEach(item => {
       if (item.cities.length === 0) {
-        rateById.set(item.provinceName, item.confirmedCount);
+        rateById.set(item.provinceName, {
+          ...item,
+          cityName: item.provinceName,
+        });
       } else {
         item.cities.forEach(city => {
-          rateById.set(city.cityName, city.confirmedCount);
+          rateById.set(city.cityName, city);
         });
       }
     });
@@ -33,20 +42,24 @@ function App() {
           .append("path")
           .attr("class", function(d) {
             const { name } = d.properties;
-            const count = rateById.get(name) || rateById.get(name.substring(0, name.length - 1)) || 0;
-            if (count === 0) {
-              return 'q0';
-            } else if (count < 10) {
-              return 'q1';
-            } else if (count < 100) {
-              return 'q2';
-            } else if (count < 500) {
-              return 'q3';
-            } else if (count < 1000) {
-              return 'q4';
-            } else {
-              return 'q5';
+            const city = rateById.get(name) || rateById.get(name.substring(0, name.length - 1));
+            if (city) {
+              const count = city.confirmedCount;
+              if (count === 0) {
+                return 'q0';
+              } else if (count < 10) {
+                return 'q1';
+              } else if (count < 100) {
+                return 'q2';
+              } else if (count < 500) {
+                return 'q3';
+              } else if (count < 1000) {
+                return 'q4';
+              } else {
+                return 'q5';
+              }
             }
+            return 'q0';
           })
           .attr("d", path)
           .on("mouseout", () => {
@@ -56,7 +69,20 @@ function App() {
               const m = d3.mouse(d3.select("body").node());
               setM(m);
               setShowName(true);
-              setName(d.properties.name);
+              const { name } = d.properties;
+              const city = rateById.get(name) || rateById.get(name.substring(0, name.length - 1));
+              console.log('city', city);
+              if (city) {
+                setCity(city);
+              } else {
+                setCity({
+                  cityName: name,
+                  confirmedCount: 31,
+                  suspectedCount: 0,
+                  curedCount: 0,
+                  deadCount: 0,
+                });
+              }
           });
       // svg.append("g")
       //     .attr("class", "provinces")
@@ -74,7 +100,7 @@ function App() {
   console.log('m:', m);
   return (
     <div className="app">
-      {showName &&
+      {showName && city.cityName &&
         <div
           className="tooltip"
           style={{
@@ -83,9 +109,18 @@ function App() {
             top: `${m[1] -10}px`,
           }}
         >
-          <label>
-            <span>{name}</span>
-          </label>
+          <div>
+            <span>{city.cityName}</span>
+          </div>
+          <div>
+            <span>确诊: {city.confirmedCount}</span>
+          </div>
+          <div>
+            <span>死亡: {city.deadCount}</span>
+          </div>
+          <div>
+            <span>治愈: {city.curedCount}</span>
+          </div>
         </div>
       }
       <div className="svg-wrapper">

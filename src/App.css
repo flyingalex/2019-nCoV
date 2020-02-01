@@ -1,14 +1,11 @@
 .tooltip {
   border: 1px solid #cb181d;
+  padding: 5px;
   color: #cb181d;
 }
 
-#tooltip label {
-  font-style: italic;
-  font-size: 70%;
-  display: block;
-  float: left;
-  font-weight: bold;
+.svg-wrapper {
+  text-align: center;
 }
 
 .provinces {
