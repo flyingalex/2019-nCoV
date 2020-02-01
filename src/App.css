@@ -1,0 +1,37 @@
+.tooltip {
+  border: 1px solid #cb181d;
+  color: #cb181d;
+}
+
+#tooltip label {
+  font-style: italic;
+  font-size: 70%;
+  display: block;
+  float: left;
+  font-weight: bold;
+}
+
+.provinces {
+  fill: none;
+  stroke: #777;
+  stroke-width: 1px;
+  stroke-linejoin: round;
+}
+
+.cities {
+  fill: white;
+  stroke: #aaa;
+  stroke-width: 0.2px;
+  stroke-linejoin: round;
+}
+
+.active {
+  fill: orange;
+}
+
+.q0 { fill: #ffffff; }
+.q1 { fill: #fdebcf; }
+.q2 { fill: #f59e83; }
+.q3 { fill: #e55a4e; }
+.q4 { fill: #cb2a2f; }
+.q5 { fill: #70161d; }
