@@ -16,8 +16,8 @@ function App() {
   const [showName, setShowName] = useState(false);
   const [m, setM] = useState([0, 0]);
   const width = 960, height = 600;
-  const rateById = d3.map();
   useEffect(() => {
+    const rateById = d3.map();
     result.forEach(item => {
       if (item.cities.length === 0) {
         rateById.set(item.provinceName, {
@@ -35,55 +35,92 @@ function App() {
     const path = d3.geoPath().projection(proj);
     const makeMap = ([cities, provinces]) => {
       svg.append("g")
-          .attr("class", "cities")
-          .selectAll("path")
-          .data(cities.features)
-          .enter()
-          .append("path")
-          .attr("class", function(d) {
+        .attr("class", "cities")
+        .selectAll("path")
+        .data(cities.features)
+        .enter()
+        .append("path")
+        .attr("class", function(d) {
+          const { name } = d.properties;
+          const city = rateById.get(name) || rateById.get(name.substring(0, name.length - 1));
+          if (city) {
+            const count = city.confirmedCount;
+            if (count === 0) {
+              return 'q0';
+            } else if (count < 10) {
+              return 'q1';
+            } else if (count < 100) {
+              return 'q2';
+            } else if (count < 500) {
+              return 'q3';
+            } else if (count <= 1000) {
+              return 'q4';
+            } else {
+              return 'q5';
+            }
+          }
+          return 'q0';
+        })
+        .attr("d", path)
+        .on("mouseout", () => {
+          setShowName(false);
+        })
+        .on("mouseover", (d) => {
+            const m = d3.mouse(d3.select("body").node());
+            setM(m);
+            setShowName(true);
             const { name } = d.properties;
             const city = rateById.get(name) || rateById.get(name.substring(0, name.length - 1));
             if (city) {
-              const count = city.confirmedCount;
-              if (count === 0) {
-                return 'q0';
-              } else if (count < 10) {
-                return 'q1';
-              } else if (count < 100) {
-                return 'q2';
-              } else if (count < 500) {
-                return 'q3';
-              } else if (count < 1000) {
-                return 'q4';
-              } else {
-                return 'q5';
-              }
+              setCity(city);
+            } else {
+              setCity({
+                cityName: name,
+                confirmedCount: 0,
+                suspectedCount: 0,
+                curedCount: 0,
+                deadCount: 0,
+              });
             }
-            return 'q0';
-          })
-          .attr("d", path)
-          .on("mouseout", () => {
-            setShowName(false);
-          })
-          .on("mouseover", (d) => {
-              const m = d3.mouse(d3.select("body").node());
-              setM(m);
-              setShowName(true);
-              const { name } = d.properties;
-              const city = rateById.get(name) || rateById.get(name.substring(0, name.length - 1));
-              console.log('city', city);
-              if (city) {
-                setCity(city);
-              } else {
-                setCity({
-                  cityName: name,
-                  confirmedCount: 0,
-                  suspectedCount: 0,
-                  curedCount: 0,
-                  deadCount: 0,
-                });
-              }
-          });
+        });
+      const data = [
+        { color: '#70161d', text: '> 1000' },
+        { color: '#cb2a2f', text: '500-1000' },
+        { color: '#e55a4e', text: '100-499' },
+        { color: '#f59e83', text: '10-99' },
+        { color: '#fdebcf', text: '1-9' },
+      ];
+      const tooltip = svg
+        .append("g")
+        .attr("transform", "translate(20, 50)")
+        .selectAll("g")
+        .data(data)
+        .enter()
+        .append("g")
+        .attr("transform", function (d, i) {
+          return `translate(0, ${i * 40})`;
+        });
+
+      tooltip
+        .append("rect")
+        .attr("width", 20)
+        .attr("height", 20)
+        .style("fill", function (d, i) {
+            return d.color;
+        });
+      tooltip
+        .append("text")
+        .attr("transform", "translate(30, 15)")
+        .style("fill", 'black')
+        .text(function (d, i) {
+            return d.text;
+        });
+      svg
+        .append("g")
+        .append("text")
+        .attr("transform", "translate(330, 20)")
+        .text("中国新型冠状病毒 2019-nCoV市级分布图");
+
       // svg.append("g")
       //     .attr("class", "provinces")
       //     .selectAll("path")
@@ -97,7 +134,6 @@ function App() {
     };
     fetchData();
   }, []);
-  console.log('m:', m);
   return (
     <div className="app">
       {showName && city.cityName &&
