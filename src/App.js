@@ -190,6 +190,16 @@ function App() {
       <div className="svg-wrapper">
         <svg width={width} height={height}></svg>
       </div>
+
+      <div className="note">
+        数据来自丁香园: <a rel="noopener noreferrer" target="_blank" href="https://ncov.dxy.cn/ncovh5/view/pneumonia">https://ncov.dxy.cn/ncovh5/view/pneumonia</a>
+        <br/>
+        地图数据来自: <a rel="noopener noreferrer" target="_blank" href="https://github.com/zhshi/d3js-footprint">https://github.com/zhshi/d3js-footprint</a>
+        <br/>
+        该项目用于学习用，权威数据请参考官方信息
+        <br/>
+        如有问题，请联系<a href="mailto:hulinalex@163.com">hulinalex@163.com</a>
+      </div>
     </div>
   );
 }

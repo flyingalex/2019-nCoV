@@ -33,3 +33,7 @@
 .q3 { fill: #e55a4e; }
 .q4 { fill: #cb2a2f; }
 .q5 { fill: #70161d; }
+
+.note {
+  padding: 40px;
+}
