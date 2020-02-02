@@ -77,7 +77,7 @@ function App() {
               } else {
                 setCity({
                   cityName: name,
-                  confirmedCount: 31,
+                  confirmedCount: 0,
                   suspectedCount: 0,
                   curedCount: 0,
                   deadCount: 0,
