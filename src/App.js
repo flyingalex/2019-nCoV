@@ -30,6 +30,13 @@ function App() {
         });
       }
     });
+    const getCity = (name) => {
+      return rateById.get(name) ||
+      rateById.get(name.substring(0, name.length - 1)) ||
+      rateById.get(name.substring(0, name.length - 2)) ||
+      rateById.get(name.substring(0, name.length - 2)) ||
+      rateById.get(name.replace('哈萨克自治', ''));
+    };
     const svg = d3.select("svg");
     const proj = d3.geoMercator().center([105, 38]).scale(750).translate([width/2, height/2]);
     const path = d3.geoPath().projection(proj);
@@ -41,8 +48,8 @@ function App() {
         .enter()
         .append("path")
         .attr("class", function(d) {
-          const { name } = d.properties;
-          const city = rateById.get(name) || rateById.get(name.substring(0, name.length - 1));
+          // 颜色相关class
+          const city = getCity(d.properties.name);
           if (city) {
             const count = city.confirmedCount;
             if (count === 0) {
@@ -70,7 +77,7 @@ function App() {
             setM(m);
             setShowName(true);
             const { name } = d.properties;
-            const city = rateById.get(name) || rateById.get(name.substring(0, name.length - 1));
+            const city = getCity(name);
             if (city) {
               setCity(city);
             } else {
@@ -83,6 +90,7 @@ function App() {
               });
             }
         });
+      // 图例
       const data = [
         { color: '#70161d', text: '> 1000' },
         { color: '#cb2a2f', text: '500-1000' },
@@ -121,13 +129,33 @@ function App() {
         .attr("transform", "translate(330, 20)")
         .text("中国新型冠状病毒 2019-nCoV市级分布图");
 
-      // svg.append("g")
-      //     .attr("class", "provinces")
-      //     .selectAll("path")
-      //     .data(provinces.features)
-      //     .enter()
-      //     .append("path")
-      //     .attr("d", path);
+      const province = svg.append("g")
+        .attr("class", "provinces")
+        .selectAll("path")
+        .data(provinces.features)
+        .enter();
+
+      province
+        .append("path")
+        .attr("d", path);
+
+      // add province name
+      // province
+      //   .append("text")
+      //   .text(function (d, i) {
+      //     return d.properties.name;
+      //   })
+      //   .attr("fill", "rgba(6,85,178,0.5)")
+      //   .attr("x", function (d) {
+      //       var local = proj([d.properties.cp[0], d.properties.cp[1]])
+      //       return local[0]
+      //   })
+      //   .attr("y", function (d) {
+      //       var local = proj([d.properties.cp[0], d.properties.cp[1]])
+      //       return local[1]
+      //   })
+      //   .style('font-weight', '100')
+      //   .style("font-size", "10px");
     };
     const fetchData = async () => {
       makeMap([china_cities, china_provinces]);
