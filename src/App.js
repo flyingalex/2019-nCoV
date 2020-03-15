@@ -51,7 +51,7 @@ function App() {
           // 颜色相关class
           const city = getCity(d.properties.name);
           if (city) {
-            const count = city.confirmedCount;
+            const count = city.confirmedCount - city.curedCount;
             if (count === 0) {
               return 'q0';
             } else if (count < 10) {
@@ -177,7 +177,7 @@ function App() {
             <span>{city.cityName}</span>
           </div>
           <div>
-            <span>现存: {city.confirmedCount - city.curedCount}</span>
+            <span>现存确诊: {city.confirmedCount - city.curedCount}</span>
           </div>
         </div>
       }
