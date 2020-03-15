@@ -177,13 +177,7 @@ function App() {
             <span>{city.cityName}</span>
           </div>
           <div>
-            <span>确诊: {city.confirmedCount}</span>
-          </div>
-          <div>
-            <span>死亡: {city.deadCount}</span>
-          </div>
-          <div>
-            <span>治愈: {city.curedCount}</span>
+            <span>现存: {city.confirmedCount - city.curedCount}</span>
           </div>
         </div>
       }
